@@ -8,7 +8,7 @@ function obtenerConexion() {
     if (!$db_uri) {
         // Plan B Local: Por si haces pruebas en tu computadora
         // Reemplaza "TU_CONTRASEÑA" por la contraseña real de tu base de datos
-        $db_uri = "postgresql://postgres:kTBDmqUJvW8QZmNy@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require";
+        $db_uri = "postgresql://postgres:TU_CONTRASEÑA_REAL@aws-0-us-west-1.pooler.supabase.com:6543/postgres";
     }
 
     try {
