@@ -1,0 +1,100 @@
+//INICIAR SERVIDOR PHP LOCAL 
+& "C:\xampp\php\php.exe" -S localhost:8000
+
+//DESPLEGAR PHP CON GIT HUD ACTIONS Y RENDER
+Paso 1: Subir tus archivos a GitHub
+Si aún no tienes tu repositorio en GitHub, abre la terminal de tu computadora (o la de VS Code) y ejecuta estos comandos secuencialmente para subir el proyecto:
+
+Bash
+# 1. Inicializar el repositorio Git local
+git init
+
+# 2. Agregar todos los archivos (index.php, Dockerfile, frontend.html, .github)
+git add .
+
+# 3. Guardar el estado inicial
+git commit -m "Primer commit: Estructura base PHP"
+
+# 4. Cambiar el nombre de la rama principal a main
+git branch -M main
+
+# 5. Enlazar con tu repositorio remoto de GitHub
+# (Reemplaza la URL de abajo con la de TU propio repositorio vacío en GitHub)
+git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+
+# 6. Subir los archivos
+git push -u origin main
+Paso 2: Crear el Web Service en Render
+Entra a tu cuenta en Render.com.
+
+En el panel principal, haz clic en el botón New + (arriba a la derecha) y selecciona Web Service.
+
+Si es tu primera vez, Render te pedirá conectar tu cuenta de GitHub. Una vez conectada, verás la lista de tus repositorios. Selecciona el repositorio de este proyecto y haz clic en Connect.
+
+Ahora, configura el formulario con los siguientes datos específicos:
+
+Name: Dale un nombre a tu proyecto (ejemplo: mi-api-php).
+
+Region: Elige la más cercana (usualmente Ohio (us-east) u Oregon (us-west)).
+
+Branch: main
+
+Root Directory: Déjalo vacío (ya que tus archivos están directamente en la raíz).
+
+Language: Selecciona de la lista obligatoriamente Docker.
+
+Baja al final de la página, asegúrate de que esté seleccionado el plan Free ($0/month) y haz clic en el botón Create Web Service.
+
+Paso 3: Obtener el "Deploy Hook" de Render
+Render empezará a compilar tu aplicación por primera vez. Mientras lo hace, obtendremos el enlace secreto que usará GitHub Actions:
+
+Dentro del panel de tu servicio recién creado en Render, busca el menú lateral izquierdo y entra a Settings (Configuración).
+
+Desplázate hacia abajo hasta encontrar una sección llamada Deploy Hook.
+
+Verás una URL larga que empieza con algo como https://api.render.com/deploy/srv-.... Haz clic en el botón Copy que está a la par para guardarla en tu portapapeles.
+
+Paso 4: Configurar el Secreto en GitHub
+Para que el archivo deploy.yml pueda usar la URL de Render sin que nadie más la vea, la guardaremos de forma segura en los almacenes ocultos de GitHub:
+
+Abre tu navegador web, ve a tu repositorio en GitHub.com.
+
+Haz clic en la pestaña Settings (Configuración del repositorio, la tuerca de arriba).
+
+En la barra lateral izquierda, busca la sección Security y haz clic en Secrets and variables -> Actions.
+
+Haz clic en el botón verde New repository secret.
+
+Completa los dos campos exactamente así:
+
+Name: RENDER_DEPLOY_HOOK (Debe ser en mayúsculas y exacto).
+
+Secret: Pega la URL larga que acabas de copiar de las configuraciones de Render.
+
+Haz clic en Add secret.
+
+Paso 5: Modificar el Frontend y probar el Flujo Automatizado
+¡La infraestructura ya está enlazada! Ahora hagamos la prueba de fuego:
+
+Ve a tu Dashboard de Render y copia la URL pública que te asignó el sistema (la encuentras arriba a la izquierda, abajo del nombre de tu proyecto, termina en .onrender.com).
+
+Abre tu archivo frontend.html en VS Code, busca la variable URL_BACKEND y reemplaza el texto de prueba con tu URL real de Render:
+
+JavaScript
+const URL_BACKEND = 'https://mi-api-php.onrender.com';
+Guarda los cambios del archivo. En tu terminal ejecuta el push para enviar la actualización a GitHub:
+
+Bash
+git add frontend.html
+git commit -m "Actualizada URL de producción en el Frontend"
+git push origin main
+¿Qué pasará ahora tras bambalinas?
+GitHub detectará el push.
+
+La pestaña Actions de tu repositorio se encenderá con un círculo amarillo: el archivo deploy.yml estará corriendo en los servidores de GitHub.
+
+GitHub ejecutará el comando curl hacia el Secreto guardado.
+
+Render recibirá el toque del Deploy Hook instantáneamente, cancelará cualquier compilación vieja, bajará el nuevo cambio de tu repositorio y actualizará tu API de PHP en vivo.
+
+¡Felicidades, has creado un entorno de integración y despliegue continuo (CI/CD) completamente funcional y gratuito! Puedes abrir el archivo frontend.html localmente en tu computadora o subirlo a GitHub Pages, rellenar los campos y ver cómo procesa la información directo desde internet.

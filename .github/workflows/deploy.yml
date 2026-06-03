@@ -1,0 +1,33 @@
+# name: Nombre formal identificativo que aparecerá en la pestaña "Actions" de tu repositorio en GitHub.
+name: Deploy Backend to Render
+
+# on: Define el evento o "disparador" que encenderá los servidores automatizados de GitHub.
+on:
+  push:
+    # Restringe el disparo para que solo reaccione si los cambios confirmados se suben a la rama 'main'.
+    branches:
+      - main
+
+# jobs: Bloque que agrupa las tareas independientes que se ejecutarán en paralelo o de forma secuencial.
+jobs:
+  deploy:
+    name: Ejecutar Despliegue Automático (CI/CD)
+    
+    # runs-on: Define el sistema operativo del entorno de pruebas virtual temporal que nos presta GitHub.
+    # 'ubuntu-latest' levanta un contenedor Linux Ubuntu limpio y actualizado en la nube.
+    runs-on: ubuntu-latest
+
+    # steps: Secuencia de comandos ordenados que ejecutará la máquina de Ubuntu.
+    steps:
+      # Paso 1: Descarga e indexa de forma segura el código fuente de tu repositorio dentro de la máquina virtual.
+      # Utiliza una acción empaquetada oficial creada por la comunidad de GitHub ('actions/checkout').
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      # Paso 2: Ejecuta una instrucción de terminal nativa de Linux.
+      - name: Notificar a Render para iniciar la compilación Docker
+        # 'run: |' permite escribir comandos de consola tradicionales.
+        # 'curl -X POST' realiza una llamada asíncrona hacia la URL protegida oculta en tus secretos.
+        # Al recibir este llamado, Render sabe que debe bajar el nuevo código y compilar el Dockerfile.
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
