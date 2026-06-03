@@ -2,27 +2,32 @@
 // conexion.php
 
 function obtenerConexion() {
-    // Lee las variables de entorno de forma segura
-    $host = getenv('db.fswzxwkfcaflojleqvfn.supabase.co');
-    $db   = getenv('proyecto-php-render');
-    $user = getenv('postgres');
+    $host = getenv('SUPABASE_HOST');
+    $db   = getenv('SUPABASE_DB');
+    $user = getenv('SUPABASE_USER');
     $pass = getenv('SUPABASE_PASSWORD');
-    $port = "5432"; // Puerto estándar de PostgreSQL
+    $port = "5432"; 
 
     try {
-        $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
-        // Inicializa la conexión PDO
+
+
+    $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
         $pdo = new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
         return $pdo;
-    } catch (PDOException $e) {
-        // Si hay error de conexión, detiene todo y responde en JSON
+
+
+
+        } catch (PDOException $e) {
         header("Content-Type: application/json");
         echo json_encode([
             "status" => "error", 
-            "message" => "Fallo de conexión a la BD: " . $e->getMessage()
+
+
+
+            "message" => "Fallo crítico de conexión a la Base de Datos: " . $e->getMessage()
         ]);
         exit;
     }
