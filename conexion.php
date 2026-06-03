@@ -2,25 +2,26 @@
 // conexion.php
 
 function obtenerConexion() {
-    $host = getenv('SUPABASE_HOST');
-    $db   = getenv('SUPABASE_DB');
-    $user = getenv('SUPABASE_USER');
-    $pass = getenv('SUPABASE_PASSWORD');
-    $port = "6543"; // Puerto predeterminado de PostgreSQL
+    // 1. Intentar leer la URI directa inyectada por Render
+    $db_uri = getenv('SUPABASE_DATABASE_URL');
+
+    if (!$db_uri) {
+        // Plan B Local: Por si haces pruebas en tu computadora
+        // Reemplaza "TU_CONTRASEÑA" por la contraseña real de tu base de datos
+        $db_uri = "postgresql://postgres:TU_CONTRASEÑA@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require";
+    }
 
     try {
-
-
-    $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
-        $pdo = new PDO($dsn, $user, $pass, [
+        // Formateamos el Data Source Name (DSN) usando la URL directa
+        $dsn = "pgsql:" . $db_uri;
+        
+        $pdo = new PDO($dsn, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
+        
         return $pdo;
-
-
-
-        } catch (PDOException $e) {
+    } catch (PDOException $e) {
         header("Content-Type: application/json");
         echo json_encode([
             "status" => "error", 
