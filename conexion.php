@@ -2,20 +2,27 @@
 // conexion.php
 
 function obtenerConexion() {
-    // 1. Intentar leer la URI directa inyectada por Render
-    $db_uri = getenv('SUPABASE_DATABASE_URL');
+    // Leer las variables inyectadas de forma individual desde Render
+    $host = getenv('SUPABASE_HOST');
+    $db   = getenv('SUPABASE_DB');
+    $user = getenv('SUPABASE_USER');
+    $pass = getenv('SUPABASE_PASSWORD');
+    $port = getenv('SUPABASE_PORT');
 
-    if (!$db_uri) {
-        // Plan B Local: Por si haces pruebas en tu computadora
-        // Reemplaza "TU_CONTRASEÑA" por la contraseña real de tu base de datos
-        $db_uri = "postgresql://postgres:TU_CONTRASEÑA_REAL@aws-0-us-west-1.pooler.supabase.com:6543/postgres";
+    // Valores por defecto para pruebas locales (en tu computadora)
+    if (!$host) {
+        $host = 'aws-0-us-west-1.pooler.supabase.com'; 
+        $port = '6543';
+        $db   = 'postgres';
+        $user = 'postgres.ojdtsvjavxyiwagomvih'; // Tu usuario con el ID del proyecto
+        $pass = 'TU_CONTRASEÑA_REAL'; 
     }
 
     try {
-        // Formateamos el Data Source Name (DSN) usando la URL directa
-        $dsn = "pgsql:" . $db_uri;
+        // Construimos el Data Source Name (DSN) estándar de PostgreSQL
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=require";
         
-        $pdo = new PDO($dsn, null, null, [
+        $pdo = new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
@@ -25,9 +32,6 @@ function obtenerConexion() {
         header("Content-Type: application/json");
         echo json_encode([
             "status" => "error", 
-
-
-
             "message" => "Fallo crítico de conexión a la Base de Datos: " . $e->getMessage()
         ]);
         exit;
