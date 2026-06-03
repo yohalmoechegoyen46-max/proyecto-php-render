@@ -2,27 +2,19 @@
 // conexion.php
 
 function obtenerConexion() {
-    // Leer las variables inyectadas de forma individual desde Render
-    $host = getenv('SUPABASE_HOST');
-    $db   = getenv('SUPABASE_DB');
-    $user = getenv('SUPABASE_USER');
-    $pass = getenv('SUPABASE_PASSWORD');
-    $port = getenv('SUPABASE_PORT');
+    // Render inyecta esta variable automáticamente al hacer el "Linked Database"
+    $db_uri = getenv('DATABASE_URL');
 
-    // Valores por defecto para pruebas locales (en tu computadora)
-    if (!$host) {
-        $host = 'aws-0-us-west-1.pooler.supabase.com'; 
-        $port = '6543';
-        $db   = 'postgres';
-        $user = 'postgres.ojdtsvjavxyiwagomvih'; // Tu usuario con el ID del proyecto
-        $pass = 'TU_CONTRASEÑA_REAL'; 
+    if (!$db_uri) {
+        // Plan B Local: Por si realizas pruebas directamente en tu computadora (XAMPP/Docker)
+        $db_uri = "postgresql://postgres:postgres@localhost:5432/postgres";
     }
 
     try {
-        // Construimos el Data Source Name (DSN) estándar de PostgreSQL
-        $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=require";
+        // El controlador 'pdo_pgsql' requiere el prefijo 'pgsql:' antes de la cadena URI completa
+        $dsn = "pgsql:" . $db_uri;
         
-        $pdo = new PDO($dsn, $user, $pass, [
+        $pdo = new PDO($dsn, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
@@ -32,7 +24,7 @@ function obtenerConexion() {
         header("Content-Type: application/json");
         echo json_encode([
             "status" => "error", 
-            "message" => "Fallo crítico de conexión a la Base de Datos: " . $e->getMessage()
+            "message" => "Fallo crítico al conectar con la base de datos interna de Render: " . $e->getMessage()
         ]);
         exit;
     }
