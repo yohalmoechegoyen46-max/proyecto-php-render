@@ -1,6 +1,10 @@
 //INICIAR SERVIDOR PHP LOCAL 
 & "C:\xampp\php\php.exe" -S localhost:8000
 
+//CONTRASEÑA 
+kTBDmqUJvW8QZmNy
+
+
 //DESPLEGAR PHP CON GIT HUD ACTIONS Y RENDER
 Paso 1: Subir tus archivos a GitHub
 Si aún no tienes tu repositorio en GitHub, abre la terminal de tu computadora (o la de VS Code) y ejecuta estos comandos secuencialmente para subir el proyecto:

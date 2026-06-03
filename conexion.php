@@ -3,9 +3,9 @@
 
 function obtenerConexion() {
     // Lee las variables de entorno de forma segura
-    $host = getenv('SUPABASE_HOST');
-    $db   = getenv('SUPABASE_DB');
-    $user = getenv('SUPABASE_USER');
+    $host = getenv('db.fswzxwkfcaflojleqvfn.supabase.co');
+    $db   = getenv('proyecto-php-render');
+    $user = getenv('postgres');
     $pass = getenv('SUPABASE_PASSWORD');
     $port = "5432"; // Puerto estándar de PostgreSQL
 
