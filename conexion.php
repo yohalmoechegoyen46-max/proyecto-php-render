@@ -6,7 +6,7 @@ function obtenerConexion() {
     $db   = getenv('SUPABASE_DB');
     $user = getenv('SUPABASE_USER');
     $pass = getenv('SUPABASE_PASSWORD');
-    $port = "65432"; // Puerto predeterminado de PostgreSQL
+    $port = "6543"; // Puerto predeterminado de PostgreSQL
 
     try {
 
