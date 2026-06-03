@@ -29,13 +29,13 @@ if (isset($input['nombre']) && isset($input['correo'])) {
 
         echo json_encode([
             "status" => "success", 
-            "message" => "¡Datos guardados con éxito y de forma ordenada en Supabase!"
+            "message" => "¡Registro almacenado con éxito en Supabase!"
         ]);
 
     } catch (PDOException $e) {
         echo json_encode([
             "status" => "error", 
-            "message" => "Error al insertar en la tabla: " . $e->getMessage()
+            "message" => "Error al ejecutar la inserción: " . $e->getMessage()
         ]);
     }
 } else {
